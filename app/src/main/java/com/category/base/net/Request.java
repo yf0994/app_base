@@ -8,6 +8,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.category.base.BaseApplication;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -118,8 +119,8 @@ public class Request {
             }) {
             };
         }
-
-        mQueue.add(request);
+        BaseApplication.getApplicationBase().getReuqestQueue().add(request);
+//        mQueue.add(request);
     }
 
     private String getParams(Map<String, String> parms) {
@@ -163,7 +164,7 @@ public class Request {
             }
         }) {
         };
-        mQueue.add(request);
+        BaseApplication.getApplicationBase().getReuqestQueue().add(request);
     }
 
     public void getReponseByPostMethod(String url, final IReponseListener listener) {
@@ -191,6 +192,6 @@ public class Request {
                         return mParams;
                     }
                 };
-        mQueue.add(request);
+        BaseApplication.getApplicationBase().getReuqestQueue().add(request);
     }
 }
