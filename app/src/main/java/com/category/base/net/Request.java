@@ -60,12 +60,14 @@ public class Request {
      */
     public void getJsonResponse(String url, final IReponseListener listener) {
         StringRequest request = null;
+        listener.beforeRequest();
         if (mMethod == com.android.volley.Request.Method.POST) {
             request = new StringRequest(com.android.volley.Request.Method.POST, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String msg) {
                     try {
                         listener.onSuccess(new JSONObject(msg));
+                        listener.afterRequest();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -74,6 +76,7 @@ public class Request {
                 @Override
                 public void onErrorResponse(VolleyError volleyError) {
                     listener.onFail(volleyError.toString());
+                    listener.afterRequest();
                 }
             }) {
                 @Override
@@ -101,6 +104,7 @@ public class Request {
                 public void onResponse(String msg) {
                     try {
                         listener.onSuccess(new JSONObject(msg));
+                        listener.afterRequest();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -109,6 +113,7 @@ public class Request {
                 @Override
                 public void onErrorResponse(VolleyError volleyError) {
                     listener.onFail(volleyError.toString());
+                    listener.afterRequest();
                 }
             }) {
             };
@@ -134,7 +139,7 @@ public class Request {
 
     public void getReponseByGetMethod(String url, final IReponseListener listener) {
         StringRequest request = null;
-
+        listener.beforeRequest();
         StringBuffer sb = new StringBuffer();
         sb.append(url);
         if (mParams != null) {
@@ -145,6 +150,7 @@ public class Request {
             public void onResponse(String msg) {
                 try {
                     listener.onSuccess(new JSONObject(msg));
+                    listener.afterRequest();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -153,6 +159,7 @@ public class Request {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 listener.onFail(volleyError.toString());
+                listener.afterRequest();
             }
         }) {
         };
@@ -160,12 +167,14 @@ public class Request {
     }
 
     public void getReponseByPostMethod(String url, final IReponseListener listener) {
+        listener.beforeRequest();
         StringRequest request =
                 request = new StringRequest(com.android.volley.Request.Method.POST, url, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String msg) {
                         try {
                             listener.onSuccess(new JSONObject(msg));
+                            listener.afterRequest();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -174,6 +183,7 @@ public class Request {
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
                         listener.onFail(volleyError.toString());
+                        listener.afterRequest();
                     }
                 }) {
                     @Override
