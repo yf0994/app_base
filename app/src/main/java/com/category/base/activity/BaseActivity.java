@@ -21,7 +21,7 @@ import com.category.base.util.Util;
  * LastUpdateBy:594601408@qq.com
  */
 public abstract class BaseActivity<T extends BasePresenter> extends AppCompatActivity implements BaseView, View.OnClickListener {
-    private T mBasePresenter;
+    protected T mBasePresenter;
 
     protected Toolbar mToolBar;
     protected FragmentManager mFragmentManager;

@@ -17,9 +17,9 @@ import com.category.base.util.Util;
  * Created by fengyin on 16-4-11.
  */
 public abstract class BaseFragment<T extends BasePresenter> extends Fragment implements View.OnClickListener, BaseView {
-    private Activity mActivity;
-    private View mRootView;
-    private T mBasePresenter;
+    protected Activity mActivity;
+    protected View mRootView;
+    protected T mBasePresenter;
 
     private boolean mVisible;
 
