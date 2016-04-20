@@ -1,15 +1,18 @@
 package com.category.base.net;
 
+import com.category.base.net.IReponseListener;
+import com.category.base.net.Params;
 import com.google.gson.Gson;
 
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import okhttp3.*;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Created by fengyin on 16-4-20.
@@ -37,7 +40,7 @@ public class RequestManager {
         return sRequestManager;
     }
 
-    public void getResponseByGetMethod(String url, final IReponseListener listener, Params ... params){
+    public <T> void  getResponseByGetMethod(String url, final IReponseListener<T> listener, final Class<T> clazz, Params ... params){
         StringBuffer sb = new StringBuffer();
         sb.append(url);
         if(params != null){
@@ -61,13 +64,16 @@ public class RequestManager {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                String result = response.body().string();
                 listener.afterRequest();
-                listener.onSuccess(response.body().toString());
+                Gson gson = new Gson();
+                T t = gson.fromJson(result, clazz);
+                listener.onSuccess(t);
             }
         });
     }
 
-    public void getResponseByPostMethod(String url, final IReponseListener listener, Params ... params){
+    public <T> void getResponseByPostMethod(String url, final IReponseListener<T> listener,final Class<T> clazz, Params... params){
         FormBody.Builder formBodyBuilder = new FormBody.Builder();
         listener.beforeRequest();
         for(int i = 0; i < params.length; i++){
@@ -84,7 +90,11 @@ public class RequestManager {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                listener.onSuccess(response.body().toString());
+                listener.afterRequest();
+                String result = response.body().string();
+                Gson gson = new Gson();
+                T t = gson.fromJson(result, clazz);
+                listener.onSuccess(t);
             }
         });
     }
