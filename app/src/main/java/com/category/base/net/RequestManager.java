@@ -28,7 +28,7 @@ public class RequestManager {
 
     public static RequestManager getInstance(){
         if(sRequestManager == null){
-            synchronized (sRequestManager){
+            synchronized (RequestManager.class){
                 if(sRequestManager == null){
                     sRequestManager = new RequestManager();
                 }
