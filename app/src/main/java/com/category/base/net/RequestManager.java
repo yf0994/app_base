@@ -5,11 +5,16 @@ import com.category.base.net.Params;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.Cookie;
+import okhttp3.CookieJar;
 import okhttp3.FormBody;
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -21,12 +26,25 @@ public class RequestManager {
     private static RequestManager sRequestManager;
     private OkHttpClient mOkHttpClient;
 
-    private Gson mGson;
-
     private RequestManager(){
         mOkHttpClient = new OkHttpClient.Builder().
-                connectTimeout(30, TimeUnit.SECONDS).retryOnConnectionFailure(true).build();
-        mGson = new Gson();
+                connectTimeout(10, TimeUnit.SECONDS).
+                writeTimeout(10, TimeUnit.SECONDS).
+                readTimeout(30, TimeUnit.SECONDS).
+                cookieJar(new CookieJar() {
+                    private final HashMap<HttpUrl, List<Cookie>> mCookieStore = new HashMap<HttpUrl, List<Cookie>>();
+                    @Override
+                    public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
+                        mCookieStore.put(url, cookies);
+                    }
+
+                    @Override
+                    public List<Cookie> loadForRequest(HttpUrl url) {
+                        return mCookieStore.get(url);
+                    }
+                }).
+                retryOnConnectionFailure(true).
+                build();
     }
 
     public static RequestManager getInstance(){

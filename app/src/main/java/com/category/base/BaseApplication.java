@@ -1,6 +1,7 @@
 package com.category.base;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
@@ -23,14 +24,25 @@ public class BaseApplication extends Application {
         return sApplication;
     }
 
+    private static Context sApplicationContext;
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
+        sApplicationContext = this;
         mRequestQueueInstance = Volley.newRequestQueue(getBaseContext());
     }
 
     public RequestQueue getReuqestQueue(){
         return mRequestQueueInstance;
+    }
+
+    public static Context getContext(){
+        return sApplicationContext;
     }
 }

@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.category.base.BaseView;
 import com.category.base.presenter.BasePresenter;
+import com.category.base.util.LogUtil;
 import com.category.base.util.Util;
 
 /**
@@ -98,7 +99,7 @@ public abstract class BaseFragment<T extends BasePresenter> extends Fragment imp
      * @param msg
      */
     public void Logi(String msg){
-        Util.Logi(msg);
+        LogUtil.Logi(msg);
     }
 
     /**
@@ -111,7 +112,7 @@ public abstract class BaseFragment<T extends BasePresenter> extends Fragment imp
      *              @Constants.DEBUG_LEVEL_DEBUG,
      */
     public void Log(String msg, int level){
-        Util.Log(msg, level);
+        LogUtil.Log(msg, level);
     }
 
     public void showToast(String msg){

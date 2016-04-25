@@ -34,8 +34,9 @@ public abstract class ListViewBaseAdapter<T, V> extends BaseAdapter {
             convertView = mInflater.inflate(mResId, null);
             mHolder = initView(convertView);
             convertView.setTag(mHolder);
+        } else {
+            mHolder = (V) convertView.getTag();
         }
-        mHolder = (V) convertView.getTag();
         initData(position, mHolder, mList.get(position));
         return convertView;
     }
