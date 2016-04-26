@@ -33,18 +33,6 @@ public class RequestManager {
                 connectTimeout(10, TimeUnit.SECONDS).
                 writeTimeout(10, TimeUnit.SECONDS).
                 readTimeout(30, TimeUnit.SECONDS).
-                cookieJar(new CookieJar() {
-                    private final HashMap<HttpUrl, List<Cookie>> mCookieStore = new HashMap<HttpUrl, List<Cookie>>();
-                    @Override
-                    public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
-                        mCookieStore.put(url, cookies);
-                    }
-
-                    @Override
-                    public List<Cookie> loadForRequest(HttpUrl url) {
-                        return mCookieStore.get(url);
-                    }
-                }).
                 retryOnConnectionFailure(true).
                 build();
     }
