@@ -37,7 +37,7 @@ public abstract class BaseFragment<T extends BasePresenter> extends Fragment imp
     }
 
     protected void onVisible(){
-
+        lazyLoad();
     }
 
     protected abstract void lazyLoad();
@@ -81,7 +81,7 @@ public abstract class BaseFragment<T extends BasePresenter> extends Fragment imp
     public void onDestroy() {
         super.onDestroy();
         if(mBasePresenter != null){
-            mBasePresenter.onDestory();
+            mBasePresenter.onDestroy();
         }
     }
 

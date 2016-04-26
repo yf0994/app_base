@@ -12,6 +12,7 @@ import com.category.base.annotation.ContentView;
 import com.category.base.annotation.DynamicHandler;
 import com.category.base.annotation.EventBase;
 import com.category.base.annotation.ViewInject;
+import com.category.base.util.LogUtil;
 import com.category.base.util.Util;
 
 import java.lang.annotation.Annotation;
@@ -138,7 +139,7 @@ public abstract class BaseInjectActivity extends AppCompatActivity {
      * @param msg
      */
     public void Logi(String msg){
-        Util.Logi(msg);
+        LogUtil.Logi(msg);
     }
 
     /**
@@ -151,6 +152,6 @@ public abstract class BaseInjectActivity extends AppCompatActivity {
      *              @Constants.DEBUG_LEVEL_DEBUG,
      */
     public void Log(String msg, int level){
-        Util.Log(msg, level);
+        LogUtil.Log(msg, level);
     }
 }

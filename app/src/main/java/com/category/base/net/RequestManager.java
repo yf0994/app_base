@@ -1,7 +1,6 @@
 package com.category.base.net;
 
-import com.category.base.net.IReponseListener;
-import com.category.base.net.Params;
+import com.category.base.listener.IReponseListener;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -104,6 +103,7 @@ public class RequestManager {
             @Override
             public void onFailure(Call call, IOException e) {
                 listener.onFail(e.getLocalizedMessage());
+                listener.afterRequest();
             }
 
             @Override

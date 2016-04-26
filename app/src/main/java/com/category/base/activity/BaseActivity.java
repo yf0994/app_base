@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.category.base.BaseView;
 import com.category.base.presenter.BasePresenter;
+import com.category.base.util.LogUtil;
 import com.category.base.util.Util;
 
 
@@ -49,11 +50,11 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
     protected void onDestroy() {
         super.onDestroy();
         if(mBasePresenter != null){
-            mBasePresenter.onDestory();
+            mBasePresenter.onDestroy();
         }
     }
 
-    protected abstract int getLayoutId();
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -64,6 +65,8 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
         }
         return super.onOptionsItemSelected(item);
     }
+
+    protected abstract int getLayoutId();
 
     protected abstract void initView();
 
@@ -76,7 +79,7 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
      * @param msg
      */
     public void Logi(String msg){
-        Util.Logi(msg);
+        LogUtil.Logi(msg);
     }
 
     /**
@@ -89,7 +92,7 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
      *              @Constants.DEBUG_LEVEL_DEBUG,
      */
     public void Log(String msg, int level){
-        Util.Log(msg, level);
+        LogUtil.Log(msg, level);
     }
 
     public void showToast(String msg){
