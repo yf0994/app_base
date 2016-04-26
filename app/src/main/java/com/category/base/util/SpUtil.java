@@ -59,6 +59,7 @@ public class SpUtil {
     }
 
     private static SharedPreferences getSharedPreferences(String spName){
-        return BaseApplication.getContext().getSharedPreferences(spName, Context.MODE_PRIVATE);
+        return BaseApplication.getApplicationBase()
+                .getSharedPreferences(spName, Context.MODE_PRIVATE);
     }
 }

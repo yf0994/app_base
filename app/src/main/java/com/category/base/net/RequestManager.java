@@ -5,7 +5,10 @@ import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
@@ -57,15 +60,17 @@ public class RequestManager {
         return sRequestManager;
     }
 
-    public <T> void  getResponseByGetMethod(String url, final IReponseListener<T> listener, final Class<T> clazz, Params ... params){
+    public <T> void  getResponseByGetMethod(String url, final IReponseListener<T> listener, final Class<T> clazz, Map<String, String> params){
         StringBuffer sb = new StringBuffer();
         sb.append(url);
         if(params != null){
+            Set<Map.Entry<String, String>> set =  params.entrySet();
+            Iterator<Map.Entry<String, String>> iterator = set.iterator();
             sb.append("?");
-            for(int i = 0; i < params.length; i++){
-                sb.append(params[i].getKey())
-                        .append("=")
-                        .append(params[i].getValue()).append("&");
+            while(iterator.hasNext()){
+                Map.Entry<String, String> entry = iterator.next();
+                sb.append(entry.getKey()).
+                        append("=").append(entry.getValue()).append("&");
             }
         }
 
@@ -90,11 +95,16 @@ public class RequestManager {
         });
     }
 
-    public <T> void getResponseByPostMethod(String url, final IReponseListener<T> listener,final Class<T> clazz, Params... params){
+    public <T> void getResponseByPostMethod(String url, final IReponseListener<T> listener,final Class<T> clazz, Map<String, String> params){
         FormBody.Builder formBodyBuilder = new FormBody.Builder();
         listener.beforeRequest();
-        for(int i = 0; i < params.length; i++){
-            formBodyBuilder.add(params[i].getKey(), params[i].getValue());
+        if(params != null){
+            Set<Map.Entry<String, String>> set =  params.entrySet();
+            Iterator<Map.Entry<String, String>> iterator = set.iterator();
+            while(iterator.hasNext()){
+                Map.Entry<String, String> entry = iterator.next();
+                formBodyBuilder.add(entry.getKey(), entry.getValue());
+            }
         }
         FormBody formBody = formBodyBuilder.build();
         Request request = new Request.Builder().url(url).post(formBody).build();

@@ -24,8 +24,6 @@ public class BaseApplication extends Application {
         return sApplication;
     }
 
-    private static Context sApplicationContext;
-
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
@@ -34,7 +32,6 @@ public class BaseApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        sApplicationContext = this;
         mRequestQueueInstance = Volley.newRequestQueue(getBaseContext());
     }
 
@@ -42,7 +39,4 @@ public class BaseApplication extends Application {
         return mRequestQueueInstance;
     }
 
-    public static Context getContext(){
-        return sApplicationContext;
-    }
 }
