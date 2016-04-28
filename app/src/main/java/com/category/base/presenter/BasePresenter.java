@@ -7,17 +7,17 @@ import android.os.Bundle;
  */
 public interface BasePresenter {
 
-    void onCreate(Bundle savedInstanceState);
-
-    void onStart();
+//    void onCreate(Bundle savedInstanceState);
+//
+//    void onStart();
 
     void onResume();
 
-    void onPause();
-
-    void onStop();
+//    void onPause();
+//
+//    void onStop();
 
     void onDestroy();
 
-    void onSaveInstanceState(Bundle outState);
+//    void onSaveInstanceState(Bundle outState);
 }

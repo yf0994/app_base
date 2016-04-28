@@ -33,6 +33,7 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
         mFragmentManager = getSupportFragmentManager();
         int layoutId = getLayoutId();
         setContentView(layoutId);
+        initData();
         initView();
         initToolBar();
         registerListener();
@@ -71,6 +72,8 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
     protected abstract void initView();
 
     protected abstract void initToolBar();
+
+    protected abstract void initData();
 
     protected abstract void registerListener();
 

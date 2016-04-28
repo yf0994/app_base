@@ -50,6 +50,7 @@ public abstract class BaseFragment<T extends BasePresenter> extends Fragment imp
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mActivity = getActivity();
+        initData();
     }
 
     @Nullable
@@ -68,6 +69,8 @@ public abstract class BaseFragment<T extends BasePresenter> extends Fragment imp
     protected abstract void initView(View view);
 
     protected abstract void registerListener();
+
+    protected abstract void initData();
 
     @Override
     public void onResume() {

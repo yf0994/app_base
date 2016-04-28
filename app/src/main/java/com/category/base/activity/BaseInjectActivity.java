@@ -56,10 +56,13 @@ public abstract class BaseInjectActivity extends AppCompatActivity {
         autoInjectEvent();
         initToolbar();
         registerListener();
+        initData();
 
     }
 
     protected abstract void registerListener();
+
+    protected abstract void initData();
 
     protected void initToolbar(){
         if(mToolbar != null && mToolbarTitle != -1){
