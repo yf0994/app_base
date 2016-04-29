@@ -23,6 +23,7 @@ public abstract class BaseFragment<T extends BasePresenter> extends Fragment imp
     protected T mBasePresenter;
 
     private boolean mVisible;
+    private boolean mCreated = false;
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
@@ -50,7 +51,8 @@ public abstract class BaseFragment<T extends BasePresenter> extends Fragment imp
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mActivity = getActivity();
-        initData();
+        mCreated = true;
+
     }
 
     @Nullable
@@ -78,6 +80,15 @@ public abstract class BaseFragment<T extends BasePresenter> extends Fragment imp
         if(mBasePresenter != null){
             mBasePresenter.onResume();
         }
+        if(mCreated){
+            initData();
+            mCreated = false;
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
     }
 
     @Override

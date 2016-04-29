@@ -26,6 +26,7 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
 
     protected Toolbar mToolBar;
     protected FragmentManager mFragmentManager;
+    private boolean mCreate = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,11 +34,14 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
         mFragmentManager = getSupportFragmentManager();
         int layoutId = getLayoutId();
         setContentView(layoutId);
-        initData();
         initView();
         initToolBar();
         registerListener();
+        mBasePresenter = createPresenter();
+        mCreate = true;
     }
+
+    protected abstract T createPresenter();
 
     @Override
     protected void onResume() {
@@ -45,6 +49,15 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
         if(mBasePresenter != null){
             mBasePresenter.onResume();
         }
+        if(mCreate){
+            initData();
+            mCreate = false;
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 
     @Override

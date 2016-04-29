@@ -76,6 +76,4 @@ public abstract class ListViewBaseAdapter<T, V> extends BaseAdapter {
         notifyDataSetInvalidated();
         notifyDataSetChanged();
     }
-
-
 }

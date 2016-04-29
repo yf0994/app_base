@@ -35,6 +35,7 @@ public abstract class BaseInjectActivity extends AppCompatActivity {
     private int mToolbarId;
     protected Toolbar mToolbar;
     protected FragmentManager mFragmentManager;
+    private boolean mCreated = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,8 +57,22 @@ public abstract class BaseInjectActivity extends AppCompatActivity {
         autoInjectEvent();
         initToolbar();
         registerListener();
-        initData();
+        mCreated = true;
+    }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(mCreated){
+            initData();
+            mCreated = false;
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 
     protected abstract void registerListener();
