@@ -3,7 +3,10 @@ package com.category.base.net;
 import com.category.base.listener.IReponseListener;
 import com.google.gson.Gson;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.FileNameMap;
+import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -16,9 +19,13 @@ import okhttp3.Callback;
 import okhttp3.Cookie;
 import okhttp3.CookieJar;
 import okhttp3.FormBody;
+import okhttp3.Headers;
 import okhttp3.HttpUrl;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
@@ -113,5 +120,59 @@ public class RequestManager {
                 listener.onSuccess(t);
             }
         });
+    }
+
+    public <T> void uploadFileByPostMethod(String url, final IReponseListener<T> listener,
+                                      final Class<T> clazz, Map<String, File> fileParams ,Map<String, String> stringParams){
+        Request request = buildMutlipartFormRequest(url, fileParams, stringParams);
+        Call call = mOkHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                listener.onFail(e.getLocalizedMessage());
+                listener.afterRequest();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                listener.afterRequest();
+                String result = response.body().string();
+                Gson gson = new Gson();
+                T t = gson.fromJson(result, clazz);
+                listener.onSuccess(t);
+            }
+        });
+    }
+
+
+    private Request buildMutlipartFormRequest(String url, Map<String, File> fileParams, Map<String, String> stringParams){
+        MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
+        if(stringParams != null && stringParams.size() > 0){
+            for (Map.Entry<String, String> entry : stringParams.entrySet()) {
+                builder.addPart(Headers.of("Content-Disposition", "form-data; name=\"" + entry.getKey() + "\""),
+                        RequestBody.create(null, entry.getValue()));
+            }
+        }
+
+
+        if(fileParams != null && fileParams.size() > 0){
+            RequestBody fileBody = null;
+            for(Map.Entry<String, File> entry : fileParams.entrySet()){
+                File file = entry.getValue();
+                fileBody = RequestBody.create(MediaType.parse(getMimeType(file.getName())), file);
+                builder.addPart(Headers.of("Content-Disposition",
+                                "form-data; name=\"" + entry.getKey() + "\"; filename=\"" + file.getName() + "\""),
+                        fileBody);
+            }
+        }
+
+        RequestBody requestBody = builder.build();
+        return new Request.Builder().url(url).post(requestBody).build();
+    }
+
+    private String getMimeType(String path){
+        FileNameMap fileNameMap = URLConnection.getFileNameMap();
+        String contentTypeFor = fileNameMap.getContentTypeFor(path);
+        return contentTypeFor == null ? "application/octet-stream" : contentTypeFor;
     }
 }
