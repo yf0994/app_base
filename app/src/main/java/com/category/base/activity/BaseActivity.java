@@ -68,8 +68,6 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
         }
     }
 
-
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -98,6 +96,10 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
         LogUtil.Logi(msg);
     }
 
+    public void Logi(String tag, String msg){
+        LogUtil.Logi(tag, msg);
+    }
+
     /**
      * Show message in logcat.
      * @param msg The showing message.
@@ -109,6 +111,11 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
      */
     public void Log(String msg, int level){
         LogUtil.Log(msg, level);
+    }
+
+
+    public void Log(String tag, String msg, int level){
+        LogUtil.Log(tag, msg, level);
     }
 
     public void showToast(String msg){

@@ -10,6 +10,7 @@ import com.category.base.exception.DebugException;
  * Created by fengyin on 16-4-21.
  */
 public class LogUtil {
+
     /**
      * Show message in logcat in info level.
      * @param msg
@@ -22,6 +23,21 @@ public class LogUtil {
             Log.i(Constants.DEBUG_TAG, msg);
         }
     }
+
+    /**
+     * Show message in logcat by consume tag in info level.
+     * @param tag consume tag.
+     * @param msg
+     */
+    public static void Logi(String tag, String msg){
+        if(Constants.DEBUG){
+            if(TextUtils.isEmpty(msg)){
+                throw new NullPointerException("The message is null!");
+            }
+            Log.i(tag == null ? Constants.DEBUG_TAG :tag, msg);
+        }
+    }
+
 
     /**
      * Show message in logcat.
@@ -60,4 +76,45 @@ public class LogUtil {
 
         }
     }
+
+    /**
+     * Show message in logcat by consume tag and msg.
+     * @param tag The consume tag.
+     * @param msg The showing message.
+     * @param level @Constants.DEBUG_LEVEL_INFO,
+     *              @Constants.DEBUG_LEVEL_ERROR,
+     *              @Constants.DEBUG_LEVEL_WARNING,
+     *              @Constants.DEBUG_LEVEL_VERBOSE,
+     *              @Constants.DEBUG_LEVEL_DEBUG,
+     */
+    public static void Log(String tag, String msg, int level){
+        if(Constants.DEBUG){
+            if(TextUtils.isEmpty(msg)){
+                throw new NullPointerException("The message is null!");
+            }
+            if(level < Constants.DEBUG_LEVEL_DEBUG && level > Constants.DEBUG_LEVEL_ERROR){
+                throw new DebugException("Out of debug level!");
+            }
+
+            switch(level){
+                case Constants.DEBUG_LEVEL_DEBUG:
+                    Log.d(tag == null ? Constants.DEBUG_TAG : tag, msg);
+                    return;
+                case Constants.DEBUG_LEVEL_INFO:
+                    Log.i(tag == null ? Constants.DEBUG_TAG : tag, msg);
+                    return;
+                case Constants.DEBUG_LEVEL_WARNING:
+                    Log.w(tag == null ? Constants.DEBUG_TAG : tag, msg);
+                    return;
+                case Constants.DEBUG_LEVEL_ERROR:
+                    Log.e(tag == null ? Constants.DEBUG_TAG : tag, msg);
+                    return;
+                case Constants.DEBUG_LEVEL_VERBOSE:
+                    Log.v(tag == null ? Constants.DEBUG_TAG : tag, msg);
+                    return;
+            }
+
+        }
+    }
+
 }
