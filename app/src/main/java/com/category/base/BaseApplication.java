@@ -8,6 +8,7 @@ import android.content.res.Resources;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.category.base.util.CrashHandler;
+import com.category.base.util.Logger;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -88,6 +89,7 @@ public class BaseApplication extends Application {
         sContext = this;
         mRequestQueueInstance = Volley.newRequestQueue(getBaseContext());
         CrashHandler.getInstance().init(getBaseContext());
+        Logger.getInstance().init(true);
     }
 
     public static Context getContext(){

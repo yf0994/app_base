@@ -1,5 +1,5 @@
 group = 'com.category.base'
-version = '1.0.12'
+version = '1.0.13'
 
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'

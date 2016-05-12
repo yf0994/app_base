@@ -3,20 +3,48 @@ package com.category.base.util;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.category.base.BaseApplication;
 import com.category.base.constant.Constants;
 import com.category.base.exception.DebugException;
 
 /**
  * Created by fengyin on 16-4-21.
  */
-public class LogUtil {
+public class Logger {
+
+    private static Logger sLogger;
+
+    private boolean mDebug = true;
+
+    private Logger(){
+
+    }
+
+    public static Logger getInstance(){
+        if(sLogger == null){
+            synchronized (Logger.class){
+                if(sLogger == null){
+                    sLogger = new Logger();
+                }
+            }
+        }
+        return sLogger;
+    }
+
+    /**
+     * Init Logger
+     * @param isDebug true is in debug mode.
+     */
+    public void init(boolean isDebug){
+        mDebug = isDebug;
+    }
 
     /**
      * Show message in logcat in info level.
      * @param msg
      */
-    public static void Logi(String msg){
-        if(Constants.DEBUG){
+    public void Logi(String msg){
+        if(mDebug){
             if(TextUtils.isEmpty(msg)){
                 throw new NullPointerException("The message is null!");
             }
@@ -29,8 +57,8 @@ public class LogUtil {
      * @param tag consume tag.
      * @param msg
      */
-    public static void Logi(String tag, String msg){
-        if(Constants.DEBUG){
+    public void Logi(String tag, String msg){
+        if(mDebug){
             if(TextUtils.isEmpty(msg)){
                 throw new NullPointerException("The message is null!");
             }
@@ -48,8 +76,8 @@ public class LogUtil {
      *              @Constants.DEBUG_LEVEL_VERBOSE,
      *              @Constants.DEBUG_LEVEL_DEBUG,
      */
-    public static void Log(String msg, int level){
-        if(Constants.DEBUG){
+    public void Log(String msg, int level){
+        if(mDebug){
             if(TextUtils.isEmpty(msg)){
                 throw new NullPointerException("The message is null!");
             }
@@ -87,8 +115,8 @@ public class LogUtil {
      *              @Constants.DEBUG_LEVEL_VERBOSE,
      *              @Constants.DEBUG_LEVEL_DEBUG,
      */
-    public static void Log(String tag, String msg, int level){
-        if(Constants.DEBUG){
+    public void Log(String tag, String msg, int level){
+        if(mDebug){
             if(TextUtils.isEmpty(msg)){
                 throw new NullPointerException("The message is null!");
             }

@@ -10,8 +10,7 @@ import android.widget.Toast;
 
 import com.category.base.BaseView;
 import com.category.base.presenter.BasePresenter;
-import com.category.base.util.LogUtil;
-import com.category.base.util.Util;
+import com.category.base.util.Logger;
 
 
 /**
@@ -93,11 +92,11 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
      * @param msg
      */
     public void Logi(String msg){
-        LogUtil.Logi(msg);
+        Logger.getInstance().Logi(msg);
     }
 
     public void Logi(String tag, String msg){
-        LogUtil.Logi(tag, msg);
+        Logger.getInstance().Logi(tag, msg);
     }
 
     /**
@@ -110,12 +109,12 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
      *              @Constants.DEBUG_LEVEL_DEBUG,
      */
     public void Log(String msg, int level){
-        LogUtil.Log(msg, level);
+        Logger.getInstance().Log(msg, level);
     }
 
 
     public void Log(String tag, String msg, int level){
-        LogUtil.Log(tag, msg, level);
+        Logger.getInstance().Log(tag, msg, level);
     }
 
     public void showToast(String msg){
