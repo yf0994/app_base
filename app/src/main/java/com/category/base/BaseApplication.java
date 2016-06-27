@@ -24,6 +24,8 @@ public class BaseApplication extends Application {
     private Resources mResources;
     private Resources.Theme mTheme;
 
+    private static BaseApplication sInstance;
+
     private static Context sContext;
 
     @Override
@@ -76,6 +78,7 @@ public class BaseApplication extends Application {
     public void onCreate() {
         super.onCreate();
         sContext = this;
+        sInstance = this;
         mRequestQueueInstance = Volley.newRequestQueue(getBaseContext());
         CrashHandler.getInstance().init(getBaseContext());
         Logger.getInstance().init(true);
@@ -83,6 +86,10 @@ public class BaseApplication extends Application {
 
     public static Context getContext(){
         return sContext;
+    }
+
+    public static BaseApplication getInstance(){
+        return sInstance;
     }
 
     public RequestQueue getReuqestQueue(){

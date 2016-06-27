@@ -120,7 +120,7 @@ public class Request {
             }) {
             };
         }
-        BaseApplication.getApplicationBase().getReuqestQueue().add(request);
+        BaseApplication.getInstance().getReuqestQueue().add(request);
 //        mQueue.add(request);
     }
 
@@ -165,7 +165,7 @@ public class Request {
             }
         }) {
         };
-        BaseApplication.getApplicationBase().getReuqestQueue().add(request);
+        BaseApplication.getInstance().getReuqestQueue().add(request);
     }
 
     public void getReponseByPostMethod(String url, final IReponseListener listener) {
@@ -193,6 +193,6 @@ public class Request {
                         return mParams;
                     }
                 };
-        BaseApplication.getApplicationBase().getReuqestQueue().add(request);
+        BaseApplication.getInstance().getReuqestQueue().add(request);
     }
 }
