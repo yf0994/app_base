@@ -20,20 +20,9 @@ public class BaseApplication extends Application {
 
     private RequestQueue mRequestQueueInstance;
 
-    private static BaseApplication sApplication;
-
     private AssetManager mAssetManager;
     private Resources mResources;
     private Resources.Theme mTheme;
-
-    public static BaseApplication getApplicationBase(){
-        synchronized (BaseApplication.class) {
-            if (sApplication == null) {
-                sApplication = new BaseApplication();
-            }
-        }
-        return sApplication;
-    }
 
     private static Context sContext;
 

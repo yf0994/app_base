@@ -1,6 +1,7 @@
 package com.category.base.util;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
 import android.os.*;
 import android.os.Process;
 
@@ -85,7 +86,11 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
         File file = new File(PATH + FILE_NAME + time + FILE_NAME_SUFFIX);
         try{
             PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(file)));
-            pw.println(time);
+            pw.println("time:" + time);
+            PackageInfo packageInfo = mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), 0);
+            pw.println("PackageName:" + packageInfo.packageName);
+            pw.println("App VersionName:" + packageInfo.versionName);
+            pw.println("App VersionCode:" + packageInfo.versionCode);
             pw.println();
             ex.printStackTrace(pw);
             pw.close();

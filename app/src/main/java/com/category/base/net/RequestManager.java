@@ -1,5 +1,6 @@
 package com.category.base.net;
 
+import com.category.base.BaseApplication;
 import com.category.base.listener.IReponseListener;
 import com.google.gson.Gson;
 
@@ -7,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.FileNameMap;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -14,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.Cache;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Cookie;
@@ -36,11 +39,25 @@ public class RequestManager {
     private OkHttpClient mOkHttpClient;
 
     private RequestManager(){
+        Cache cache = new Cache(new File(BaseApplication.getContext().getCacheDir(), "HttpCache"), 1024 * 1024 * 16);
         mOkHttpClient = new OkHttpClient.Builder().
                 connectTimeout(10, TimeUnit.SECONDS).
                 writeTimeout(10, TimeUnit.SECONDS).
                 readTimeout(30, TimeUnit.SECONDS).
-                retryOnConnectionFailure(true).
+                retryOnConnectionFailure(true).cache(cache).
+                cookieJar(new CookieJar() {
+                    private final HashMap<HttpUrl, List<Cookie>> cookieStore = new HashMap<HttpUrl, List<Cookie>>();
+                    @Override
+                    public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
+                        cookieStore.put(url, cookies);
+                    }
+
+                    @Override
+                    public List<Cookie> loadForRequest(HttpUrl url) {
+                        List<Cookie> cookies = cookieStore.get(url);
+                        return cookies != null ? cookies : new ArrayList<Cookie>();
+                    }
+                }).
                 build();
     }
 
