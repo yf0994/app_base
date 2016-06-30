@@ -1,5 +1,8 @@
 package com.category.base.net;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.category.base.BaseApplication;
 import com.category.base.listener.IReponseListener;
 import com.google.gson.Gson;
@@ -72,55 +75,16 @@ public class RequestManager {
         return sRequestManager;
     }
 
-    public <T> void  getResponseByGetMethod(String url, final IReponseListener<T> listener, final Class<T> clazz, Map<String, String> params){
-        StringBuffer sb = new StringBuffer();
-        sb.append(url);
-        if(params != null){
-            Set<Map.Entry<String, String>> set =  params.entrySet();
-            Iterator<Map.Entry<String, String>> iterator = set.iterator();
-            sb.append("?");
-            while(iterator.hasNext()){
-                Map.Entry<String, String> entry = iterator.next();
-                sb.append(entry.getKey()).
-                        append("=").append(entry.getValue()).append("&");
-            }
-        }
-
-        Request request = new Request.Builder().url(sb.toString()).build();
-        Call call = mOkHttpClient.newCall(request);
+    /**
+     * Get origin result from response.
+     * @param url
+     * @param listener
+     * @param params
+     */
+    public void getResponseByGetMethod(@NonNull String url, @NonNull final IReponseListener<String> listener,
+                                           @Nullable Map<String, String> params){
         listener.beforeRequest();
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                listener.afterRequest();
-                listener.onFail(e.getLocalizedMessage());
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String result = response.body().string();
-                listener.afterRequest();
-                Gson gson = new Gson();
-                T t = gson.fromJson(result, clazz);
-                listener.onSuccess(t);
-            }
-        });
-    }
-
-    public <T> void getResponseByPostMethod(String url, final IReponseListener<T> listener,final Class<T> clazz, Map<String, String> params){
-        FormBody.Builder formBodyBuilder = new FormBody.Builder();
-        listener.beforeRequest();
-        if(params != null){
-            Set<Map.Entry<String, String>> set =  params.entrySet();
-            Iterator<Map.Entry<String, String>> iterator = set.iterator();
-            while(iterator.hasNext()){
-                Map.Entry<String, String> entry = iterator.next();
-                formBodyBuilder.add(entry.getKey(), entry.getValue());
-            }
-        }
-        FormBody formBody = formBodyBuilder.build();
-        Request request = new Request.Builder().url(url).post(formBody).build();
-        Call call = mOkHttpClient.newCall(request);
+        Call call = getCallByGetParams(url, params);
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -130,6 +94,76 @@ public class RequestManager {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                String result = response.body().string();
+                listener.onSuccess(result);
+                listener.afterRequest();
+            }
+        });
+    }
+
+    /**
+     *
+     * @param url
+     * @param listener
+     * @param clazz
+     * @param params
+     * @param <T>
+     */
+    public <T> void getResponseByGetMethod(@NonNull String url, @NonNull final IReponseListener<T> listener,
+                                            @NonNull final Class<T> clazz, @Nullable Map<String, String> params){
+        listener.beforeRequest();
+        Call call = getCallByGetParams(url, params);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                listener.onFail(e.getLocalizedMessage());
+                listener.afterRequest();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String result = response.body().string();
+                Gson gson = new Gson();
+                T t = gson.fromJson(result, clazz);
+                listener.onSuccess(t);
+                listener.afterRequest();
+            }
+        });
+    }
+
+    public void getReponseByPostMethod(@NonNull String url,@NonNull final IReponseListener<String> listener,
+                                       @Nullable Map<String, String> params){
+        listener.beforeRequest();
+        Call call = getCallByPostParams(url, params);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                listener.onFail(e.getLocalizedMessage());
+                listener.afterRequest();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                listener.afterRequest();
+                String result = response.body().string();
+                listener.onSuccess(result);
+            }
+        });
+    }
+
+    public <T> void getResponseByPostMethod(@NonNull String url,@NonNull final IReponseListener<T> listener,
+                                            @NonNull final Class<T> clazz, @Nullable Map<String, String> params){
+        listener.beforeRequest();
+        Call call = getCallByPostParams(url, params);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                listener.onFail(e.getLocalizedMessage());
+                listener.afterRequest();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
                 listener.afterRequest();
                 String result = response.body().string();
                 Gson gson = new Gson();
@@ -139,8 +173,9 @@ public class RequestManager {
         });
     }
 
-    public <T> void uploadFileByPostMethod(String url, final IReponseListener<T> listener,
-                                      final Class<T> clazz, Map<String, File> fileParams ,Map<String, String> stringParams){
+    public <T> void uploadFileByPostMethod(@NonNull String url, @NonNull final IReponseListener<T> listener,
+                                      @NonNull final Class<T> clazz, @NonNull Map<String, File> fileParams,
+                                           @Nullable Map<String, String> stringParams){
         Request request = buildMutlipartFormRequest(url, fileParams, stringParams);
         Call call = mOkHttpClient.newCall(request);
         call.enqueue(new Callback() {
@@ -191,5 +226,38 @@ public class RequestManager {
         FileNameMap fileNameMap = URLConnection.getFileNameMap();
         String contentTypeFor = fileNameMap.getContentTypeFor(path);
         return contentTypeFor == null ? "application/octet-stream" : contentTypeFor;
+    }
+
+    private Call getCallByPostParams(@NonNull String url, @Nullable Map<String, String> params){
+        FormBody.Builder formBodyBuilder = new FormBody.Builder();
+        if(params != null && params.size() > 0){
+            Set<Map.Entry<String, String>> set =  params.entrySet();
+            Iterator<Map.Entry<String, String>> iterator = set.iterator();
+            while(iterator.hasNext()){
+                Map.Entry<String, String> entry = iterator.next();
+                formBodyBuilder.add(entry.getKey(), entry.getValue());
+            }
+        }
+        FormBody formBody = formBodyBuilder.build();
+        Request request = new Request.Builder().url(url).post(formBody).build();
+        return mOkHttpClient.newCall(request);
+    }
+
+    private Call getCallByGetParams(@NonNull String url, @Nullable Map<String, String> params){
+        StringBuffer sb = new StringBuffer();
+        sb.append(url);
+        if(params != null && params.size() > 0){
+            Set<Map.Entry<String, String>> set =  params.entrySet();
+            Iterator<Map.Entry<String, String>> iterator = set.iterator();
+            sb.append("?");
+            while(iterator.hasNext()){
+                Map.Entry<String, String> entry = iterator.next();
+                sb.append(entry.getKey()).
+                        append("=").append(entry.getValue()).append("&");
+            }
+        }
+
+        Request request = new Request.Builder().url(sb.toString()).build();
+        return mOkHttpClient.newCall(request);
     }
 }
