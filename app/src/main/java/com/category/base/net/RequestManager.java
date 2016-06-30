@@ -1,14 +1,18 @@
 package com.category.base.net;
 
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.category.base.BaseApplication;
 import com.category.base.listener.IReponseListener;
+import com.category.base.util.Util;
 import com.google.gson.Gson;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.FileNameMap;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -74,6 +78,33 @@ public class RequestManager {
         }
         return sRequestManager;
     }
+
+    public void loadImage(String url, final ImageListener listener){
+        Request request = new Request.Builder().url(url).build();
+        Call call = mOkHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                listener.onError();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                InputStream inputStream = response.body().byteStream();
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                byte[] buffer = new byte[4096];
+                int ret = -1;
+                while((ret = inputStream.read(buffer)) != -1){
+                    baos.write(buffer, 0, ret);
+                }
+                baos.flush();
+                byte [] data = baos.toByteArray();
+                listener.onSuccess(data);
+                baos.close();
+            }
+        });
+    }
+
 
     /**
      * Get origin result from response.
@@ -259,5 +290,10 @@ public class RequestManager {
 
         Request request = new Request.Builder().url(sb.toString()).build();
         return mOkHttpClient.newCall(request);
+    }
+
+    public interface ImageListener{
+        public void onSuccess(byte[] data);
+        public void onError();
     }
 }
