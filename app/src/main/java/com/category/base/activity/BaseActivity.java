@@ -140,4 +140,14 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
     public void onClick(View v) {
 
     }
+
+    @Override
+    public void showProgress(String msg) {
+        toast(msg);
+    }
+
+    @Override
+    public void toastNetworkError(String msg) {
+        toast(msg);
+    }
 }

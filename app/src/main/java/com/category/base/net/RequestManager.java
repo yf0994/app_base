@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 
 import com.category.base.BaseApplication;
 import com.category.base.listener.IReponseListener;
+import com.category.base.util.NetworkUtil;
 import com.category.base.util.Util;
 import com.google.gson.Gson;
 
@@ -114,6 +115,11 @@ public class RequestManager {
      */
     public void getResponseByGetMethod(@NonNull String url, @NonNull final IReponseListener<String> listener,
                                            @Nullable Map<String, String> params){
+        if(!NetworkUtil.isNetworkConnected(BaseApplication.getContext())){
+            listener.connectNetworkFail("");
+            return;
+        }
+
         listener.beforeRequest();
         Call call = getCallByGetParams(url, params);
         call.enqueue(new Callback() {
@@ -142,6 +148,10 @@ public class RequestManager {
      */
     public <T> void getResponseByGetMethod(@NonNull String url, @NonNull final IReponseListener<T> listener,
                                             @NonNull final Class<T> clazz, @Nullable Map<String, String> params){
+        if(!NetworkUtil.isNetworkConnected(BaseApplication.getContext())){
+            listener.connectNetworkFail("");
+            return;
+        }
         listener.beforeRequest();
         Call call = getCallByGetParams(url, params);
         call.enqueue(new Callback() {
@@ -164,6 +174,10 @@ public class RequestManager {
 
     public void getReponseByPostMethod(@NonNull String url,@NonNull final IReponseListener<String> listener,
                                        @Nullable Map<String, String> params){
+        if(!NetworkUtil.isNetworkConnected(BaseApplication.getContext())){
+            listener.connectNetworkFail("");
+            return;
+        }
         listener.beforeRequest();
         Call call = getCallByPostParams(url, params);
         call.enqueue(new Callback() {
@@ -184,6 +198,10 @@ public class RequestManager {
 
     public <T> void getResponseByPostMethod(@NonNull String url,@NonNull final IReponseListener<T> listener,
                                             @NonNull final Class<T> clazz, @Nullable Map<String, String> params){
+        if(!NetworkUtil.isNetworkConnected(BaseApplication.getContext())){
+            listener.connectNetworkFail("");
+            return;
+        }
         listener.beforeRequest();
         Call call = getCallByPostParams(url, params);
         call.enqueue(new Callback() {
@@ -207,6 +225,11 @@ public class RequestManager {
     public <T> void uploadFileByPostMethod(@NonNull String url, @NonNull final IReponseListener<T> listener,
                                       @NonNull final Class<T> clazz, @NonNull Map<String, File> fileParams,
                                            @Nullable Map<String, String> stringParams){
+        if(!NetworkUtil.isNetworkConnected(BaseApplication.getContext())){
+            listener.connectNetworkFail("");
+            return;
+        }
+        listener.beforeRequest();;
         Request request = buildMutlipartFormRequest(url, fileParams, stringParams);
         Call call = mOkHttpClient.newCall(request);
         call.enqueue(new Callback() {
@@ -293,7 +316,7 @@ public class RequestManager {
     }
 
     public interface ImageListener{
-        public void onSuccess(byte[] data);
-        public void onError();
+        void onSuccess(byte[] data);
+        void onError();
     }
 }

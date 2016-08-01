@@ -15,4 +15,8 @@ public interface BaseView {
 
     void hideProgress();
 
+    void showProgress(String msg);
+
+    void toastNetworkError(String msg);
+
 }

@@ -11,4 +11,6 @@ public interface RequestCallback<T> {
     void requestSuccess(T t);
 
     void requestComplete();
+
+    void connectNetworkFail(String msg);
 }

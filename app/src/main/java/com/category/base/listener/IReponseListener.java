@@ -11,4 +11,6 @@ public interface IReponseListener<T> {
     void beforeRequest();
 
     void afterRequest();
+
+    void connectNetworkFail(String msg);
 }
