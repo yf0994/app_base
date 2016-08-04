@@ -69,9 +69,13 @@ public abstract class BaseFragment<T extends BasePresenter> extends Fragment imp
 
     protected abstract void initView(View view);
 
-    protected abstract void registerListener();
+    protected void registerListener(){
 
-    protected abstract void initData();
+    }
+
+    protected void initData(){
+
+    }
 
     @Override
     public void onResume() {

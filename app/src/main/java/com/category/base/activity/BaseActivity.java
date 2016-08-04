@@ -81,11 +81,17 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
 
     protected abstract void initView();
 
-    protected abstract void initToolBar();
+    protected void initToolBar(){
 
-    protected abstract void initData();
+    }
 
-    protected abstract void registerListener();
+    protected void initData(){
+
+    }
+
+    protected void registerListener(){
+
+    }
 
     /**
      * Show message in logcat in info level.
