@@ -32,10 +32,10 @@ public class ImageLoader {
         mDiskLruCache = DiskLruCache.open(Util.getDiskCacheDir(context, "images"), Util.getAppVersion(context), 1, maxSize);
     }
 
-    public static ImageLoader getInstance(Context context){
-        if(sInstance == null){
-            synchronized (ImageLoader.class){
-                if(sInstance == null){
+    public static ImageLoader getInstance(Context context) {
+        if (sInstance == null) {
+            synchronized (ImageLoader.class) {
+                if (sInstance == null) {
                     try {
                         sInstance = new ImageLoader(context, 10 * 1024 * 1024);
                     } catch (IOException e) {
@@ -47,13 +47,12 @@ public class ImageLoader {
         return sInstance;
     }
 
-
     public void loadImage(final String url, final ImageView view, final int defaultImageResId, final int errorImageResId, final int maxWidth, final int maxHeight) throws IOException {
         final String hashUrl = Util.hashKey(url);
         WeakReference<Bitmap> reference = mCache.get(hashUrl);
-        if(reference != null){
+        if (reference != null) {
             Bitmap bitmap = reference.get();
-            if(bitmap != null){
+            if (bitmap != null) {
                 view.setImageBitmap(bitmap);
                 return;
             }
@@ -61,7 +60,7 @@ public class ImageLoader {
         }
 
         final DiskLruCache.Editor editor = mDiskLruCache.edit(hashUrl);
-        if(editor != null){
+        if (editor != null) {
             Bitmap bitmap = BitmapFactory.decodeStream(editor.newInputStream(0));
             mCache.put(hashUrl, new WeakReference<Bitmap>(bitmap));
             return;

@@ -27,7 +27,7 @@ public abstract class BaseFragment<T extends BasePresenter> extends Fragment imp
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if(getUserVisibleHint()){
+        if (getUserVisibleHint()) {
             mVisible = true;
             onVisible();
         } else {
@@ -36,13 +36,13 @@ public abstract class BaseFragment<T extends BasePresenter> extends Fragment imp
         }
     }
 
-    protected void onVisible(){
+    protected void onVisible() {
         lazyLoad();
     }
 
     protected abstract void lazyLoad();
 
-    protected void onInVisible(){
+    protected void onInVisible() {
 
     }
 
@@ -61,31 +61,34 @@ public abstract class BaseFragment<T extends BasePresenter> extends Fragment imp
         mRootView = inflater.inflate(layoutId, container, false);
         initView(mRootView);
         registerListener();
+        mBasePresenter = createPresenter();
         return mRootView;
     }
-
 
     protected abstract int getLayoutId();
 
     protected abstract void initView(View view);
 
-    protected void registerListener(){
+    protected abstract T createPresenter();
+
+    protected void registerListener() {
 
     }
 
-    protected void initData(){
+    protected void initData() {
 
     }
+
 
     @Override
     public void onResume() {
         super.onResume();
-        if(mBasePresenter != null){
-            mBasePresenter.onResume();
-        }
-        if(mCreated){
+        if (mCreated) {
             initData();
             mCreated = false;
+        }
+        if (mBasePresenter != null) {
+            mBasePresenter.onResume();
         }
     }
 
@@ -97,7 +100,7 @@ public abstract class BaseFragment<T extends BasePresenter> extends Fragment imp
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(mBasePresenter != null){
+        if (mBasePresenter != null) {
             mBasePresenter.onDestroy();
         }
     }
@@ -105,34 +108,36 @@ public abstract class BaseFragment<T extends BasePresenter> extends Fragment imp
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ViewGroup parent = (ViewGroup)mRootView.getParent();
-        if(parent != null){
+        ViewGroup parent = (ViewGroup) mRootView.getParent();
+        if (parent != null) {
             parent.removeView(mRootView);
         }
     }
 
     /**
      * Show message in logcat in info level.
+     *
      * @param msg
      */
-    public void Logi(String msg){
+    public void Logi(String msg) {
         Logger.getInstance().Logi(msg);
     }
 
     /**
      * Show message in logcat.
-     * @param msg The showing message.
+     *
+     * @param msg   The showing message.
      * @param level @Constants.DEBUG_LEVEL_INFO,
-     *              @Constants.DEBUG_LEVEL_ERROR,
-     *              @Constants.DEBUG_LEVEL_WARNING,
-     *              @Constants.DEBUG_LEVEL_VERBOSE,
-     *              @Constants.DEBUG_LEVEL_DEBUG,
+     * @Constants.DEBUG_LEVEL_ERROR,
+     * @Constants.DEBUG_LEVEL_WARNING,
+     * @Constants.DEBUG_LEVEL_VERBOSE,
+     * @Constants.DEBUG_LEVEL_DEBUG,
      */
-    public void Log(String msg, int level){
+    public void Log(String msg, int level) {
         Logger.getInstance().Log(msg, level);
     }
 
-    public void showToast(String msg){
+    public void showToast(String msg) {
         Toast.makeText(mActivity, msg, Toast.LENGTH_LONG).show();
     }
 
