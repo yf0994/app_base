@@ -1,16 +1,20 @@
 package com.category.base.activity;
 
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.category.base.BaseView;
 import com.category.base.presenter.BasePresenter;
 import com.category.base.util.Logger;
+import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 
 /**
@@ -51,6 +55,19 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
         }
         if (mBasePresenter != null) {
             mBasePresenter.onResume();
+        }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        SystemBarTintManager tintManager;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+            tintManager = new SystemBarTintManager(this);
+            tintManager.setStatusBarTintColor(Color.rgb(0x30, 0x9f, 0xf8));
+            tintManager.setStatusBarTintEnabled(true);
         }
     }
 
