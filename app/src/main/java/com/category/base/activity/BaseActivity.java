@@ -1,16 +1,20 @@
 package com.category.base.activity;
 
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.category.base.BaseView;
 import com.category.base.presenter.BasePresenter;
 import com.category.base.util.Logger;
+import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 
 /**
@@ -45,12 +49,25 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
     @Override
     protected void onResume() {
         super.onResume();
-        if(mBasePresenter != null){
-            mBasePresenter.onResume();
-        }
-        if(mCreate){
+        if (mCreate) {
             initData();
             mCreate = false;
+        }
+        if (mBasePresenter != null) {
+            mBasePresenter.onResume();
+        }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        SystemBarTintManager tintManager;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+            tintManager = new SystemBarTintManager(this);
+            tintManager.setStatusBarTintColor(Color.rgb(0x30, 0x9f, 0xf8));
+            tintManager.setStatusBarTintEnabled(true);
         }
     }
 
@@ -62,7 +79,7 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(mBasePresenter != null){
+        if (mBasePresenter != null) {
             mBasePresenter.onDestroy();
         }
     }
@@ -81,64 +98,66 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
 
     protected abstract void initView();
 
-    protected void initToolBar(){
+    protected void initToolBar() {
 
     }
 
-    protected void initData(){
+    protected void initData() {
 
     }
 
-    protected void registerListener(){
+    protected void registerListener() {
 
     }
 
     /**
      * Show message in logcat in info level.
+     *
      * @param msg
      */
-    public void Logi(String msg){
+    public void Logi(String msg) {
         Logger.getInstance().Logi(msg);
     }
 
-    public void Logi(String tag, String msg){
+    public void Logi(String tag, String msg) {
         Logger.getInstance().Logi(tag, msg);
     }
 
     /**
      * Show message in logcat.
-     * @param msg The showing message.
+     *
+     * @param msg   The showing message.
      * @param level @Constants.DEBUG_LEVEL_INFO,
-     *              @Constants.DEBUG_LEVEL_ERROR,
-     *              @Constants.DEBUG_LEVEL_WARNING,
-     *              @Constants.DEBUG_LEVEL_VERBOSE,
-     *              @Constants.DEBUG_LEVEL_DEBUG,
+     * @Constants.DEBUG_LEVEL_ERROR,
+     * @Constants.DEBUG_LEVEL_WARNING,
+     * @Constants.DEBUG_LEVEL_VERBOSE,
+     * @Constants.DEBUG_LEVEL_DEBUG,
      */
-    public void Log(String msg, int level){
+    public void Log(String msg, int level) {
         Logger.getInstance().Log(msg, level);
     }
 
 
-    public void Log(String tag, String msg, int level){
+    public void Log(String tag, String msg, int level) {
         Logger.getInstance().Log(tag, msg, level);
     }
 
-    public void showToast(String msg){
+    public void showToast(String msg) {
         Toast.makeText(BaseActivity.this, msg, Toast.LENGTH_LONG).show();
     }
 
     @Override
-    public void toast(String msg){
+    public void toast(String msg) {
         showToast(msg);
     }
 
     @Override
-    public void showProgress(){
+    public void showProgress() {
 
     }
 
     @Override
-    public void hideProgress(){
+    public void hideProgress() {
 
     }
 
