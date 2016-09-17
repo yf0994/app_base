@@ -90,6 +90,8 @@ public abstract class BaseFragment<T extends BasePresenter> extends Fragment imp
         if (mBasePresenter != null) {
             mBasePresenter.onResume();
         }
+        mVisible = getUserVisibleHint();
+        setUserVisibleHint(mVisible);
     }
 
     @Override
