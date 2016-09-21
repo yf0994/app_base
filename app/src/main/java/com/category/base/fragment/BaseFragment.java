@@ -79,7 +79,6 @@ public abstract class BaseFragment<T extends BasePresenter> extends Fragment imp
 
     }
 
-
     @Override
     public void onResume() {
         super.onResume();
