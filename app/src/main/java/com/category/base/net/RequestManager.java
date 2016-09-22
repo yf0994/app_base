@@ -1,19 +1,19 @@
 package com.category.base.net;
 
-import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.category.base.BaseApplication;
 import com.category.base.listener.IReponseListener;
 import com.category.base.util.NetworkUtil;
-import com.category.base.util.Util;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.net.FileNameMap;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -132,7 +132,9 @@ public class RequestManager {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String result = response.body().string();
-                listener.onSuccess(result);
+                Result r = new Result<String>();
+                r.setData(result);
+                listener.onSuccess(r);
                 listener.afterRequest();
             }
         });
@@ -163,11 +165,12 @@ public class RequestManager {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                listener.afterRequest();
                 String result = response.body().string();
                 Gson gson = new Gson();
-                T t = gson.fromJson(result, clazz);
+                Type userType = new TypeToken<Result<T>>() {}.getType();
+                Result<T> t = gson.fromJson(result, userType);
                 listener.onSuccess(t);
-                listener.afterRequest();
             }
         });
     }
@@ -191,7 +194,9 @@ public class RequestManager {
             public void onResponse(Call call, Response response) throws IOException {
                 listener.afterRequest();
                 String result = response.body().string();
-                listener.onSuccess(result);
+                Result r = new Result<String>();
+                r.setData(result);
+                listener.onSuccess(r);
             }
         });
     }
@@ -216,7 +221,8 @@ public class RequestManager {
                 listener.afterRequest();
                 String result = response.body().string();
                 Gson gson = new Gson();
-                T t = gson.fromJson(result, clazz);
+                Type userType = new TypeToken<Result<T>>() {}.getType();
+                Result<T> t = gson.fromJson(result, userType);
                 listener.onSuccess(t);
             }
         });
@@ -244,7 +250,8 @@ public class RequestManager {
                 listener.afterRequest();
                 String result = response.body().string();
                 Gson gson = new Gson();
-                T t = gson.fromJson(result, clazz);
+                Type userType = new TypeToken<Result<T>>() {}.getType();
+                Result<T> t = gson.fromJson(result, userType);
                 listener.onSuccess(t);
             }
         });

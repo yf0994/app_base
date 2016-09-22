@@ -7,16 +7,9 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Environment;
 import android.os.IBinder;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
-
-import com.category.base.constant.Constants;
-import com.category.base.exception.DebugException;
 
 import java.io.Closeable;
 import java.io.EOFException;
@@ -26,9 +19,6 @@ import java.io.InputStream;
 import java.security.MessageDigest;
 import java.util.concurrent.ThreadFactory;
 import java.util.regex.Pattern;
-
-import okio.OkBuffer;
-import okio.Source;
 
 /**
  * This is a Util class.
@@ -191,15 +181,15 @@ public class Util {
             byteCount -= bytesRead;
         }
     }
-
-    /** Returns the remainder of 'source' as a buffer, closing it when done. */
-    public static OkBuffer readFully(Source source) throws IOException {
-        OkBuffer result = new OkBuffer();
-        while (source.read(result, 2048) != -1) {
-        }
-        source.close();
-        return result;
-    }
+//
+//    /** Returns the remainder of 'source' as a buffer, closing it when done. */
+//    public static OkBuffer readFully(Source source) throws IOException {
+//        OkBuffer result = new OkBuffer();
+//        while (source.read(result, 2048) != -1) {
+//        }
+//        source.close();
+//        return result;
+//    }
 
 
     public static ThreadFactory threadFactory(final String name, final boolean daemon) {
