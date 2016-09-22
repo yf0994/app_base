@@ -77,7 +77,7 @@ public class Request {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError volleyError) {
-                    listener.onFail(volleyError.toString());
+                    listener.onFail(new RequestError(volleyError));
                     listener.afterRequest();
                 }
             }) {
@@ -114,7 +114,7 @@ public class Request {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError volleyError) {
-                    listener.onFail(volleyError.toString());
+                    listener.onFail(new RequestError(volleyError));
                     listener.afterRequest();
                 }
             }) {
@@ -160,7 +160,7 @@ public class Request {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
-                listener.onFail(volleyError.toString());
+                listener.onFail(new RequestError(volleyError));
                 listener.afterRequest();
             }
         }) {
@@ -184,7 +184,7 @@ public class Request {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
-                        listener.onFail(volleyError.toString());
+                        listener.onFail(new RequestError(volleyError));
                         listener.afterRequest();
                     }
                 }) {

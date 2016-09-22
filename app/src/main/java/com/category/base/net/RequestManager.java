@@ -7,11 +7,13 @@ import com.category.base.BaseApplication;
 import com.category.base.listener.IReponseListener;
 import com.category.base.util.NetworkUtil;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.net.FileNameMap;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -125,7 +127,7 @@ public class RequestManager {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                listener.onFail(e.getLocalizedMessage());
+                listener.onFail(new RequestError(e, ErrorCode.ERROR_IOEXCEPTION));
                 listener.afterRequest();
             }
 
@@ -156,7 +158,7 @@ public class RequestManager {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                listener.onFail(e.getLocalizedMessage());
+                listener.onFail(new RequestError(e, ErrorCode.ERROR_IOEXCEPTION));
                 listener.afterRequest();
             }
 
@@ -182,7 +184,7 @@ public class RequestManager {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                listener.onFail(e.getLocalizedMessage());
+                listener.onFail(new RequestError(e, ErrorCode.ERROR_IOEXCEPTION));
                 listener.afterRequest();
             }
 
@@ -206,7 +208,7 @@ public class RequestManager {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                listener.onFail(e.getLocalizedMessage());
+                listener.onFail(new RequestError(e, ErrorCode.ERROR_IOEXCEPTION));
                 listener.afterRequest();
             }
 
@@ -221,6 +223,128 @@ public class RequestManager {
         });
     }
 
+    /**
+     * @param url      Request url
+     * @param listener Requestcallback listener
+     * @param clazz    Except class object
+     * @param params   Request params
+     * @param <T>      Pattern
+     */
+    public <T> void getResponseByGetMethod(@NonNull String url, @NonNull final IReponseListener<T> listener,
+                                           @NonNull final T clazz, @Nullable Map<String, String> params) {
+        if (!NetworkUtil.isNetworkConnected(BaseApplication.getContext())) {
+            listener.connectNetworkFail("");
+            return;
+        }
+        listener.beforeRequest();
+        Call call = getCallByGetParams(url, params);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                listener.onFail(new RequestError(e, ErrorCode.ERROR_IOEXCEPTION));
+                listener.afterRequest();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String result = response.body().string();
+                Gson gson = new Gson();
+                Type userType = new TypeToken<Result<T>>() {
+                }.getType();
+                Result<T> userResult = gson.fromJson(result, userType);
+                if (userResult.getCode() == ErrorCode.NORMAL) {
+                    listener.onSuccess(userResult.getData());
+                } else {
+                    listener.onFail(new RequestError(userResult.getCode(), userResult.getMsg()));
+                }
+                listener.afterRequest();
+            }
+        });
+    }
+
+    /**
+     * @param url      requestUrl
+     * @param listener requestcallback listener
+     * @param clazz    the arm object class
+     * @param params   reuqest params
+     * @param <T>      pattern
+     */
+    public <T> void getResponseByPostMethod(@NonNull String url, @NonNull final IReponseListener<T> listener,
+                                            @NonNull final T clazz, @Nullable Map<String, String> params) {
+        if (!NetworkUtil.isNetworkConnected(BaseApplication.getContext())) {
+            listener.connectNetworkFail("");
+            return;
+        }
+        listener.beforeRequest();
+        Call call = getCallByPostParams(url, params);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                listener.onFail(new RequestError(e, ErrorCode.ERROR_IOEXCEPTION));
+                listener.afterRequest();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                listener.afterRequest();
+                String result = response.body().string();
+                Gson gson = new Gson();
+                Type userType = new TypeToken<Result<T>>() {
+                }.getType();
+                Result<T> userResult = gson.fromJson(result, userType);
+                if (userResult.getCode() == ErrorCode.NORMAL) {
+                    listener.onSuccess(userResult.getData());
+                } else {
+                    listener.onFail(new RequestError(userResult.getCode(), userResult.getMsg()));
+                }
+                listener.afterRequest();
+            }
+        });
+    }
+
+    /**
+     * @param url          Request url
+     * @param listener     Requestcallback listener
+     * @param clazz        Except object class
+     * @param fileParams   upload the file's params
+     * @param stringParams request params
+     * @param <T>          pattern
+     */
+    public <T> void uploadFileByPostMethod(@NonNull String url, @NonNull final IReponseListener<T> listener,
+                                           @NonNull final T clazz, @NonNull Map<String, File> fileParams,
+                                           @Nullable Map<String, String> stringParams) {
+        if (!NetworkUtil.isNetworkConnected(BaseApplication.getContext())) {
+            listener.connectNetworkFail("");
+            return;
+        }
+        listener.beforeRequest();
+        Request request = buildMutlipartFormRequest(url, fileParams, stringParams);
+        Call call = mOkHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                listener.onFail(new RequestError(e, ErrorCode.ERROR_IOEXCEPTION));
+                listener.afterRequest();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                listener.afterRequest();
+                String result = response.body().string();
+                Gson gson = new Gson();
+                Type userType = new TypeToken<Result<T>>() {
+                }.getType();
+                Result<T> userResult = gson.fromJson(result, userType);
+                if (userResult.getCode() == ErrorCode.NORMAL) {
+                    listener.onSuccess(userResult.getData());
+                } else {
+                    listener.onFail(new RequestError(userResult.getCode(), userResult.getMsg()));
+                }
+                listener.afterRequest();
+            }
+        });
+    }
+
     public <T> void uploadFileByPostMethod(@NonNull String url, @NonNull final IReponseListener<T> listener,
                                            @NonNull final Class<T> clazz, @NonNull Map<String, File> fileParams,
                                            @Nullable Map<String, String> stringParams) {
@@ -229,13 +353,12 @@ public class RequestManager {
             return;
         }
         listener.beforeRequest();
-        ;
         Request request = buildMutlipartFormRequest(url, fileParams, stringParams);
         Call call = mOkHttpClient.newCall(request);
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                listener.onFail(e.getLocalizedMessage());
+                listener.onFail(new RequestError(e, ErrorCode.ERROR_IOEXCEPTION));
                 listener.afterRequest();
             }
 
