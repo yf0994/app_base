@@ -2,6 +2,8 @@ package com.category.base.listener;
 
 import com.category.base.net.Result;
 
+
+
 /**
  * Created by fengyin on 16-4-11.
  */

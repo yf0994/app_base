@@ -46,7 +46,7 @@ public class RequestManager {
     private static RequestManager sRequestManager;
     private OkHttpClient mOkHttpClient;
 
-    private RequestManager(){
+    private RequestManager() {
         Cache cache = new Cache(new File(BaseApplication.getContext().getCacheDir(), "HttpCache"), 1024 * 1024 * 16);
         mOkHttpClient = new OkHttpClient.Builder().
                 connectTimeout(10, TimeUnit.SECONDS).
@@ -55,6 +55,7 @@ public class RequestManager {
                 retryOnConnectionFailure(true).cache(cache).
                 cookieJar(new CookieJar() {
                     private final HashMap<HttpUrl, List<Cookie>> cookieStore = new HashMap<HttpUrl, List<Cookie>>();
+
                     @Override
                     public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
                         cookieStore.put(url, cookies);
@@ -69,10 +70,10 @@ public class RequestManager {
                 build();
     }
 
-    public static RequestManager getInstance(){
-        if(sRequestManager == null){
-            synchronized (RequestManager.class){
-                if(sRequestManager == null){
+    public static RequestManager getInstance() {
+        if (sRequestManager == null) {
+            synchronized (RequestManager.class) {
+                if (sRequestManager == null) {
                     sRequestManager = new RequestManager();
                 }
             }
@@ -80,7 +81,7 @@ public class RequestManager {
         return sRequestManager;
     }
 
-    public void loadImage(String url, final ImageListener listener){
+    public void loadImage(String url, final ImageListener listener) {
         Request request = new Request.Builder().url(url).build();
         Call call = mOkHttpClient.newCall(request);
         call.enqueue(new Callback() {
@@ -95,11 +96,11 @@ public class RequestManager {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 byte[] buffer = new byte[4096];
                 int ret = -1;
-                while((ret = inputStream.read(buffer)) != -1){
+                while ((ret = inputStream.read(buffer)) != -1) {
                     baos.write(buffer, 0, ret);
                 }
                 baos.flush();
-                byte [] data = baos.toByteArray();
+                byte[] data = baos.toByteArray();
                 listener.onSuccess(data);
                 baos.close();
             }
@@ -109,13 +110,14 @@ public class RequestManager {
 
     /**
      * Get origin result from response.
+     *
      * @param url
      * @param listener
      * @param params
      */
     public void getResponseByGetMethod(@NonNull String url, @NonNull final IReponseListener<String> listener,
-                                           @Nullable Map<String, String> params){
-        if(!NetworkUtil.isNetworkConnected(BaseApplication.getContext())){
+                                       @Nullable Map<String, String> params) {
+        if (!NetworkUtil.isNetworkConnected(BaseApplication.getContext())) {
             listener.connectNetworkFail("");
             return;
         }
@@ -125,7 +127,7 @@ public class RequestManager {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                listener.onFail(e.getLocalizedMessage());
+                listener.onFail(e.getMessage());
                 listener.afterRequest();
             }
 
@@ -141,7 +143,6 @@ public class RequestManager {
     }
 
     /**
-     *
      * @param url
      * @param listener
      * @param clazz
@@ -149,8 +150,8 @@ public class RequestManager {
      * @param <T>
      */
     public <T> void getResponseByGetMethod(@NonNull String url, @NonNull final IReponseListener<T> listener,
-                                            @NonNull final Class<T> clazz, @Nullable Map<String, String> params){
-        if(!NetworkUtil.isNetworkConnected(BaseApplication.getContext())){
+                                           @NonNull final Class<T> clazz, @Nullable Map<String, String> params) {
+        if (!NetworkUtil.isNetworkConnected(BaseApplication.getContext())) {
             listener.connectNetworkFail("");
             return;
         }
@@ -159,7 +160,7 @@ public class RequestManager {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                listener.onFail(e.getLocalizedMessage());
+                listener.onFail(e.getMessage());
                 listener.afterRequest();
             }
 
@@ -175,9 +176,9 @@ public class RequestManager {
         });
     }
 
-    public void getReponseByPostMethod(@NonNull String url,@NonNull final IReponseListener<String> listener,
-                                       @Nullable Map<String, String> params){
-        if(!NetworkUtil.isNetworkConnected(BaseApplication.getContext())){
+    public void getReponseByPostMethod(@NonNull String url, @NonNull final IReponseListener<String> listener,
+                                       @Nullable Map<String, String> params) {
+        if (!NetworkUtil.isNetworkConnected(BaseApplication.getContext())) {
             listener.connectNetworkFail("");
             return;
         }
@@ -186,7 +187,7 @@ public class RequestManager {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                listener.onFail(e.getLocalizedMessage());
+                listener.onFail(e.getMessage());
                 listener.afterRequest();
             }
 
@@ -201,9 +202,9 @@ public class RequestManager {
         });
     }
 
-    public <T> void getResponseByPostMethod(@NonNull String url,@NonNull final IReponseListener<T> listener,
-                                            @NonNull final Class<T> clazz, @Nullable Map<String, String> params){
-        if(!NetworkUtil.isNetworkConnected(BaseApplication.getContext())){
+    public <T> void getResponseByPostMethod(@NonNull String url, @NonNull final IReponseListener<T> listener,
+                                            @NonNull final Class<T> clazz, @Nullable Map<String, String> params) {
+        if (!NetworkUtil.isNetworkConnected(BaseApplication.getContext())) {
             listener.connectNetworkFail("");
             return;
         }
@@ -212,7 +213,7 @@ public class RequestManager {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                listener.onFail(e.getLocalizedMessage());
+                listener.onFail(e.getMessage());
                 listener.afterRequest();
             }
 
@@ -228,20 +229,130 @@ public class RequestManager {
         });
     }
 
-    public <T> void uploadFileByPostMethod(@NonNull String url, @NonNull final IReponseListener<T> listener,
-                                      @NonNull final Class<T> clazz, @NonNull Map<String, File> fileParams,
-                                           @Nullable Map<String, String> stringParams){
-        if(!NetworkUtil.isNetworkConnected(BaseApplication.getContext())){
+    /**
+     * @param url      Request url
+     * @param listener Requestcallback listener
+     * @param clazz    Except class object
+     * @param params   Request params
+     * @param <T>      Pattern
+     */
+    public <T> void getResponseByGetMethod(@NonNull String url, @NonNull final IReponseListener<T> listener,
+                                           @NonNull final T clazz, @Nullable Map<String, String> params) {
+        if (!NetworkUtil.isNetworkConnected(BaseApplication.getContext())) {
             listener.connectNetworkFail("");
             return;
         }
-        listener.beforeRequest();;
+        listener.beforeRequest();
+        Call call = getCallByGetParams(url, params);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                listener.onFail(e.getMessage());
+                listener.afterRequest();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String result = response.body().string();
+                Gson gson = new Gson();
+                Type userType = new TypeToken<Result<T>>() {
+                }.getType();
+                Result<T> userResult = gson.fromJson(result, userType);
+                listener.onSuccess(userResult);
+                listener.afterRequest();
+            }
+        });
+    }
+
+    /**
+     * @param url      requestUrl
+     * @param listener requestcallback listener
+     * @param clazz    the arm object class
+     * @param params   reuqest params
+     * @param <T>      pattern
+     */
+    public <T> void getResponseByPostMethod(@NonNull String url, @NonNull final IReponseListener<T> listener,
+                                            @NonNull final T clazz, @Nullable Map<String, String> params) {
+        if (!NetworkUtil.isNetworkConnected(BaseApplication.getContext())) {
+            listener.connectNetworkFail("");
+            return;
+        }
+        listener.beforeRequest();
+        Call call = getCallByPostParams(url, params);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                listener.onFail(e.getMessage());
+                listener.afterRequest();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                listener.afterRequest();
+                String result = response.body().string();
+                Gson gson = new Gson();
+                Type userType = new TypeToken<Result<T>>() {
+                }.getType();
+                Result<T> userResult = gson.fromJson(result, userType);
+                listener.onSuccess(userResult);
+                listener.afterRequest();
+            }
+        });
+    }
+
+    /**
+     * @param url          Request url
+     * @param listener     Requestcallback listener
+     * @param clazz        Except object class
+     * @param fileParams   upload the file's params
+     * @param stringParams request params
+     * @param <T>          pattern
+     */
+    public <T> void uploadFileByPostMethod(@NonNull String url, @NonNull final IReponseListener<T> listener,
+                                           @NonNull final T clazz, @NonNull Map<String, File> fileParams,
+                                           @Nullable Map<String, String> stringParams) {
+        if (!NetworkUtil.isNetworkConnected(BaseApplication.getContext())) {
+            listener.connectNetworkFail("");
+            return;
+        }
+        listener.beforeRequest();
         Request request = buildMutlipartFormRequest(url, fileParams, stringParams);
         Call call = mOkHttpClient.newCall(request);
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                listener.onFail(e.getLocalizedMessage());
+                listener.onFail(e.getMessage());
+                listener.afterRequest();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                listener.afterRequest();
+                String result = response.body().string();
+                Gson gson = new Gson();
+                Type userType = new TypeToken<Result<T>>() {
+                }.getType();
+                Result<T> userResult = gson.fromJson(result, userType);
+                listener.onSuccess(userResult);
+                listener.afterRequest();
+            }
+        });
+    }
+
+    public <T> void uploadFileByPostMethod(@NonNull String url, @NonNull final IReponseListener<T> listener,
+                                           @NonNull final Class<T> clazz, @NonNull Map<String, File> fileParams,
+                                           @Nullable Map<String, String> stringParams) {
+        if (!NetworkUtil.isNetworkConnected(BaseApplication.getContext())) {
+            listener.connectNetworkFail("");
+            return;
+        }
+        listener.beforeRequest();
+        Request request = buildMutlipartFormRequest(url, fileParams, stringParams);
+        Call call = mOkHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                listener.onFail(e.getMessage());
                 listener.afterRequest();
             }
 
@@ -258,9 +369,9 @@ public class RequestManager {
     }
 
 
-    private Request buildMutlipartFormRequest(String url, Map<String, File> fileParams, Map<String, String> stringParams){
+    private Request buildMutlipartFormRequest(String url, Map<String, File> fileParams, Map<String, String> stringParams) {
         MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-        if(stringParams != null && stringParams.size() > 0){
+        if (stringParams != null && stringParams.size() > 0) {
             for (Map.Entry<String, String> entry : stringParams.entrySet()) {
                 builder.addPart(Headers.of("Content-Disposition", "form-data; name=\"" + entry.getKey() + "\""),
                         RequestBody.create(null, entry.getValue()));
@@ -268,13 +379,13 @@ public class RequestManager {
         }
 
 
-        if(fileParams != null && fileParams.size() > 0){
+        if (fileParams != null && fileParams.size() > 0) {
             RequestBody fileBody = null;
-            for(Map.Entry<String, File> entry : fileParams.entrySet()){
+            for (Map.Entry<String, File> entry : fileParams.entrySet()) {
                 File file = entry.getValue();
                 fileBody = RequestBody.create(MediaType.parse(getMimeType(file.getName())), file);
                 builder.addPart(Headers.of("Content-Disposition",
-                                "form-data; name=\"" + entry.getKey() + "\"; filename=\"" + file.getName() + "\""),
+                        "form-data; name=\"" + entry.getKey() + "\"; filename=\"" + file.getName() + "\""),
                         fileBody);
             }
         }
@@ -283,18 +394,18 @@ public class RequestManager {
         return new Request.Builder().url(url).post(requestBody).build();
     }
 
-    private String getMimeType(String path){
+    private String getMimeType(String path) {
         FileNameMap fileNameMap = URLConnection.getFileNameMap();
         String contentTypeFor = fileNameMap.getContentTypeFor(path);
         return contentTypeFor == null ? "application/octet-stream" : contentTypeFor;
     }
 
-    private Call getCallByPostParams(@NonNull String url, @Nullable Map<String, String> params){
+    private Call getCallByPostParams(@NonNull String url, @Nullable Map<String, String> params) {
         FormBody.Builder formBodyBuilder = new FormBody.Builder();
-        if(params != null && params.size() > 0){
-            Set<Map.Entry<String, String>> set =  params.entrySet();
+        if (params != null && params.size() > 0) {
+            Set<Map.Entry<String, String>> set = params.entrySet();
             Iterator<Map.Entry<String, String>> iterator = set.iterator();
-            while(iterator.hasNext()){
+            while (iterator.hasNext()) {
                 Map.Entry<String, String> entry = iterator.next();
                 formBodyBuilder.add(entry.getKey(), entry.getValue());
             }
@@ -304,14 +415,14 @@ public class RequestManager {
         return mOkHttpClient.newCall(request);
     }
 
-    private Call getCallByGetParams(@NonNull String url, @Nullable Map<String, String> params){
+    private Call getCallByGetParams(@NonNull String url, @Nullable Map<String, String> params) {
         StringBuffer sb = new StringBuffer();
         sb.append(url);
-        if(params != null && params.size() > 0){
-            Set<Map.Entry<String, String>> set =  params.entrySet();
+        if (params != null && params.size() > 0) {
+            Set<Map.Entry<String, String>> set = params.entrySet();
             Iterator<Map.Entry<String, String>> iterator = set.iterator();
             sb.append("?");
-            while(iterator.hasNext()){
+            while (iterator.hasNext()) {
                 Map.Entry<String, String> entry = iterator.next();
                 sb.append(entry.getKey()).
                         append("=").append(entry.getValue()).append("&");
@@ -322,8 +433,9 @@ public class RequestManager {
         return mOkHttpClient.newCall(request);
     }
 
-    public interface ImageListener{
+    public interface ImageListener {
         void onSuccess(byte[] data);
+
         void onError();
     }
 }

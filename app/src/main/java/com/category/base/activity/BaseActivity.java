@@ -45,13 +45,18 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
     @Override
     protected void onResume() {
         super.onResume();
-        if(mBasePresenter != null){
-            mBasePresenter.onResume();
-        }
-        if(mCreate){
+        if (mCreate) {
             initData();
             mCreate = false;
         }
+        if (mBasePresenter != null) {
+            mBasePresenter.onResume();
+        }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
     }
 
     @Override
@@ -62,7 +67,7 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(mBasePresenter != null){
+        if (mBasePresenter != null) {
             mBasePresenter.onDestroy();
         }
     }
@@ -81,64 +86,66 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
 
     protected abstract void initView();
 
-    protected void initToolBar(){
+    protected void initToolBar() {
 
     }
 
-    protected void initData(){
+    protected void initData() {
 
     }
 
-    protected void registerListener(){
+    protected void registerListener() {
 
     }
 
     /**
      * Show message in logcat in info level.
+     *
      * @param msg
      */
-    public void Logi(String msg){
+    public void Logi(String msg) {
         Logger.getInstance().Logi(msg);
     }
 
-    public void Logi(String tag, String msg){
+    public void Logi(String tag, String msg) {
         Logger.getInstance().Logi(tag, msg);
     }
 
     /**
      * Show message in logcat.
-     * @param msg The showing message.
+     *
+     * @param msg   The showing message.
      * @param level @Constants.DEBUG_LEVEL_INFO,
-     *              @Constants.DEBUG_LEVEL_ERROR,
-     *              @Constants.DEBUG_LEVEL_WARNING,
-     *              @Constants.DEBUG_LEVEL_VERBOSE,
-     *              @Constants.DEBUG_LEVEL_DEBUG,
+     * @Constants.DEBUG_LEVEL_ERROR,
+     * @Constants.DEBUG_LEVEL_WARNING,
+     * @Constants.DEBUG_LEVEL_VERBOSE,
+     * @Constants.DEBUG_LEVEL_DEBUG,
      */
-    public void Log(String msg, int level){
+    public void Log(String msg, int level) {
         Logger.getInstance().Log(msg, level);
     }
 
 
-    public void Log(String tag, String msg, int level){
+    public void Log(String tag, String msg, int level) {
         Logger.getInstance().Log(tag, msg, level);
     }
 
-    public void showToast(String msg){
+    public void showToast(String msg) {
         Toast.makeText(BaseActivity.this, msg, Toast.LENGTH_LONG).show();
     }
 
     @Override
-    public void toast(String msg){
+    public void toast(String msg) {
         showToast(msg);
     }
 
     @Override
-    public void showProgress(){
+    public void showProgress() {
 
     }
 
     @Override
-    public void hideProgress(){
+    public void hideProgress() {
 
     }
 
